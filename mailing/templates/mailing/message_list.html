@@ -3,9 +3,9 @@
 {% block content %}
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h2>Получатели рассылки</h2>
+    <h2>Сообщение для рассылки</h2>
     <div class="btn-toolbar mb-2 mb-md-0">
-        <a class="btn btn-outline-primary" href="{% url 'mailing:recipient_create' %}">Добавить</a>
+        <a class="btn btn-outline-primary" href="{% url 'mailing:message_create' %}">Добавить</a>
     </div>
 </div>
 <div class="table-responsive small">
@@ -13,28 +13,26 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Почта</th>
-            <th scope="col">ФИО</th>
-            <th scope="col">Комментарий</th>
+            <th scope="col">Тема письма</th>
+            <th scope="col">Тело письма</th>
         </tr>
         </thead>
         <tbody>
-
+        {% for message in object_list %}
         <tr>
-            <td>{{ recipient.id }}</td>
-            <td>{{ recipient.email }}</td>
-            <td>{{ recipient.full_name }}</td>
-            <td>{{ recipient.comment }}</td>
-            {% if recipient.owner == user %}
+            <td>{{ message.id }}</td>
+            <td>{{ message.title }}</td>
+            <td>{{ message.message }}</td>
+            {% if message.owner == user %}
             <td class="text-end" style="width: 20vh;">
                 <a class="btn btn-outline-primary" href="#">Изменить</a>
-                <a class="btn btn-outline-danger" href="{% url 'mailing:recipient_delete' recipient.pk %}">Удалить</a>
+                <a class="btn btn-outline-danger" href="{% url 'mailing:message_delete' message.pk %}">Удалить</a>
             </td>
-
+            {% else %}
             <td class="text-end" style="width: 20vh;"></td>
-
+            {% endif %}
         </tr>
-        {% endif %}
+        {% endfor %}
 
         </tbody>
     </table>

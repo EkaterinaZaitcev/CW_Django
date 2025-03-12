@@ -13,3 +13,17 @@ class Recipient(models.Model):
         verbose_name = 'Получатель рассылки'
         verbose_name_plural = 'Получатели рассылки'
         ordering = ['id',]
+
+
+class Message(models.Model):
+    """Модель сообщения"""
+    title = models.CharField(max_length=150, verbose_name="Тема письма")
+    message = models.TextField(verbose_name="Тело письма")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Сообщение'
+        verbose_name_plural = 'Сообщения'
+        ordering = ['id', ]

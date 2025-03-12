@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, CreateView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 
-from mailing.forms import RecipientForm
-from mailing.models import Recipient
+from mailing.forms import RecipientForm, MessageForm
+from mailing.models import Recipient, Message
 
 
 class HomeView(TemplateView):
@@ -24,3 +24,37 @@ class RecipientCreateView(CreateView):
         recipient.owner = user
         recipient.save()
         return super().form_valid(form)
+
+class RecipientUpdateView(UpdateView):
+    model= Recipient
+    form_class = RecipientForm
+    success_url = reverse_lazy('mailing:recipient_list')
+
+class RecipientDeleteView(DeleteView):
+    model = Recipient
+    success_url = reverse_lazy('mailing:recipient_list')
+
+"""CRUD Сообщения"""
+class MessageListView(ListView):
+    model = Message
+
+class MessageCreateView(CreateView):
+    model = Message
+    form_class = MessageForm
+    success_message = reverse_lazy('mailing:message_list')
+
+    def form_valid(self, form):
+        message = form.save()
+        user = self.request.user
+        message.owner = user
+        message.save()
+        return super().form_valid(form)
+
+class MessageDeleteView(DeleteView):
+    model = Message
+    success_url = reverse_lazy('mailing:message_list')
+
+class MessageUpdateView(UpdateView):
+    model = Message
+    form_class = MessageForm
+    success_url = reverse_lazy('mailing:message_list')

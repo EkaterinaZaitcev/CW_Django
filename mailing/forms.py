@@ -1,12 +1,19 @@
 from django import forms
 from django.forms import ModelForm
 
-from mailing.models import Recipient
+from mailing.models import Recipient, Message
 
 
 class RecipientForm(forms.ModelForm):
 
     class Meta:
         model = Recipient
+        fields = '__all__'
+        exclude = ['owner']
+
+class MessageForm(forms.ModelForm):
+
+    class Meta:
+        model = Message
         fields = '__all__'
         exclude = ['owner']
