@@ -1,3 +1,5 @@
+from tkinter.constants import CASCADE
+
 from django.db import models
 from django.utils.timezone import datetime, timedelta
 
@@ -47,3 +49,22 @@ class Mailing(models.Model):
         verbose_name_plural = "Попытки рассылки"
         ordering = ("first_send_at", "status")
         permissions = [("can_cancel_mailing", "Can cancel mailing"),]
+
+class MailingAttempt(models.Model):
+    """Модель. Попытка рассылки"""
+    SUCCESS = "success"
+    FAILURE = "failure"
+    STATUS_CHOICES = [("SUCCESS", "Успешно"), ("FAILURE", "Не успешно")]
+
+    attempted_at = models.DateTimeField(verbose_name="Дата и время попытки отправки")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, verbose_name="статус")
+    mail_server_response = models.TextField(null=True, blank=True, verbose_name="Ответ сервера")
+    mailing = models.ForeignKey(Mailing, on_delete=models.CASCADE, related_name="attempts", verbose_name="Рассылка")
+
+    def __str__(self):
+        return f"{self.pk} - {self.attempted_at}"
+
+    class Meta:
+        verbose_name = "Попытка рассылки"
+        verbose_name_plural = "Попытки рассылки"
+        ordering = ["id",]
