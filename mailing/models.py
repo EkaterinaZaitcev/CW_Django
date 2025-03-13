@@ -5,7 +5,7 @@ from django.utils.timezone import datetime, timedelta
 
 class Recipient(models.Model):
     """Модель получатель рассылки"""
-    email = models.EmailField(max_length=255, verbose_name="Письмо", unique=True, help_text="Адрес должен быть уникальным")
+    email = models.EmailField(max_length=255, verbose_name="Электронный адрес", unique=True, help_text="Адрес должен быть уникальным")
     full_name = models.CharField(max_length=50, verbose_name="ФИО")
     comments = models.TextField(verbose_name="Комментарий", blank=True, help_text="")
 
