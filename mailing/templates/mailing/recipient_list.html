@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-
+        {% for recipient in object_list %}
         <tr>
             <td>{{ recipient.id }}</td>
             <td>{{ recipient.email }}</td>
@@ -27,15 +27,15 @@
             <td>{{ recipient.comment }}</td>
             {% if recipient.owner == user %}
             <td class="text-end" style="width: 20vh;">
-                <a class="btn btn-outline-primary" href="#">Изменить</a>
+                <a class="btn btn-outline-primary" href="{% url 'mailing:recipient_update' recipient.pk%}">Изменить</a>
                 <a class="btn btn-outline-danger" href="{% url 'mailing:recipient_delete' recipient.pk %}">Удалить</a>
             </td>
-
+            {% else %}
             <td class="text-end" style="width: 20vh;"></td>
 
         </tr>
         {% endif %}
-
+        {% endfor %}
         </tbody>
     </table>
 </div>

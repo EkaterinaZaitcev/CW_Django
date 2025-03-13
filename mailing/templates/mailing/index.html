@@ -165,15 +165,15 @@
       <div class="d-flex gap-3 justify-content-center lead fw-normal">
         {% if user.is_authenticated %}
         <h5 class="my-0 mr-md-auto font-weight-normal">Welcome {{ user.email }}!</h5>
-        <form method="post" action="{% url 'users:logout' %}" style="display: inline">
+        <form method="post" action="#" style="display: inline">
             {% csrf_token %}
             <button type="submit" class="p-2 btn btn-outline-primary">Выйти</button>
         </form>
         {% else %}
-        <a class="p-2 btn btn-outline-primary" href='#'>Войти</a>
-        <a class="p-2 btn btn-outline-primary" href='#'>Регистрация</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Войти</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:registration' %}">Регистрация</a>
         {% endif %}
-        </a>
+
       </div>
     </div>
     <div class="product-device shadow-sm d-none d-md-block"></div>

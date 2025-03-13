@@ -25,7 +25,7 @@ class MailingForm(forms.ModelForm):
         exclude = ['owner']
 
     def __init__(self, args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.pop('users', None)
         super.__init__(self, args, **kwargs)
         if user:
             self.fields['recipients'].queryset = Recipient.objects.filter(owner=user)
