@@ -17,9 +17,9 @@
     {{ form.as_p }}
 
     {% if object %}
-    <button type="submit" class="btn btn-outline-primary">Изменить</button>
+    <a class="btn btn-outline-primary m-1" href="{% url 'mailing:mailing_update' object.pk%}">Изменить</a>
     {% else %}
-    <button type="submit" class="btn btn-outline-primary">Добавить</button>
+     <a href="{% url 'mailing:mailing_list' %}" type="submit" class="btn btn-primary">Сохранить</a>
     {% endif %}
 
 </form>

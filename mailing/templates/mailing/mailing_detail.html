@@ -1,6 +1,4 @@
-{% extends 'catalog/index.html' %}
-
-
+{% extends 'mailing/index.html' %}
 {% block content %}
 <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
     <div class="text-bg-dark me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
@@ -9,6 +7,7 @@
         <p class="lead">Дата и время первой отправки: {{ object.first_send_at }}</p>
         <p class="lead">Дата и время окончания отправки: {{object.end_send_at}}</p>
         <p class="lead">Статус: {{object.status}}</p>
+
         <a href="{% url 'mailing:mailing_list' %}" class="btn btn-primary" role="button" >Назад</a>
         <a class="btn btn-outline-primary m-1" href="{% url 'mailing:mailing_update' object.pk%}">Изменить</a>
         <a class="btn btn-outline-danger m-1" href="{% url 'mailing:mailing_delete' object.pk%}">Удалить</a>

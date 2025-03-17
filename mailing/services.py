@@ -31,4 +31,4 @@ def run_mail(request, pk):
 
         mailing.status = Mailing.COMPLETED
     mailing.save()
-    return redirect("mailing:mailing_list")
+    return redirect("mailing:mailingattempt_list")

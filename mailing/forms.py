@@ -24,10 +24,3 @@ class MailingForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['owner']
         widgets = {"recipients": forms.CheckboxSelectMultiple(),}
-
-    def __init__(self, args, **kwargs):
-        user = kwargs.pop('users', None)
-        super.__init__(self, args, **kwargs)
-        if user:
-            self.fields['recipients'].queryset = Recipient.objects.filter(owner=user)
-            self.fields['Message'].queryset = Message.objects.filter(owner=user)

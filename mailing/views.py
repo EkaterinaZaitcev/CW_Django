@@ -93,6 +93,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
 
 class MailingDetailsView(LoginRequiredMixin, DetailView):
     model = Mailing
+    success_url = reverse_lazy('mailing:mailing_list')
 
     def get_queryset(self):
         queryset = Mailing.objects.prefetch_related("recipients")
@@ -100,6 +101,7 @@ class MailingDetailsView(LoginRequiredMixin, DetailView):
 
 class MailingAttemptCreateView(LoginRequiredMixin, CreateView):
     model = MailingAttempt
+    success_url = reverse_lazy('mailing:mailingattempt_list')
 
     def form_valid(self, form):
         recipient = form.save()
@@ -117,3 +119,4 @@ class MailingAttemptListView(LoginRequiredMixin, ListView):
         elif self.request.user.groups.filter(name="Пользователи").exists():
             return super().get_queryset().filter(owner=self.request.user)
         raise PermissionDenied
+
