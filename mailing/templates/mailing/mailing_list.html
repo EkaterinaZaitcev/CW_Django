@@ -23,22 +23,28 @@
         </tr>
         </thead>
         <tbody>
-        {% for mail in object_list %}
+        {% for mailing in object_list %}
         <tr>
-            <td>{{ mail.id }}</td>
-            <td>{{ mail.first_send_at }}</td>
-            <td>{{ mail.end_send_at }}</td>
-            <td>{{ mail.status }}</td>
-            {% if mail.owner == user %}
-            <td class="text-end" style="width: 20vh;">
-                <a class="btn btn-outline-primary" href="{% url 'mailing:mailing_update' mailing.pk%}">Изменить</a>
-                <a class="btn btn-outline-danger" href="{% url 'mailing:mailing_delete' mailing.pk %}">Удалить</a>
+            <td>{{ mailing.id }}</td>
+            <td>{{ mailing.first_send_at }}</td>
+            <td>{{ mailing.end_send_at }}</td>
+            <td>{{ mailing.status }}</td>
+            <td>{{ mailing.message }}</td>
+            <td>
+
+                {% for recipient in mailing.recipients.all %}
+                {{ recipient.email }}<br>
+                {% endfor %}
+
+
+
             </td>
-
-            <td class="text-end" style="width: 20vh;"></td>
-
+            <td class="text-end">
+                <a class="btn btn-outline-primary" href="{% url 'mailing:mailing_detail' mailing.pk%}">Разослать</a>
+                <a class="btn btn-outline-primary" href="{% url 'mailing:mailing_update' mailing.pk%}">Изменить</a>
+                <a class="btn btn-outline-danger" href="{% url 'mailing:mailing_delete' mailing.pk%}">Удалить</a>
+            </td>
         </tr>
-        {% endif %}
         {% endfor %}
         </tbody>
     </table>

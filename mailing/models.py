@@ -3,6 +3,9 @@ from tkinter.constants import CASCADE
 from django.db import models
 from django.utils.timezone import datetime, timedelta
 
+from users.models import CustomUser
+
+
 class Recipient(models.Model):
     """Модель получатель рассылки"""
     email = models.EmailField(max_length=255, verbose_name="Электронный адрес", unique=True, help_text="Адрес должен быть уникальным")
@@ -33,22 +36,27 @@ class Message(models.Model):
 
 class Mailing(models.Model):
     """Рассылка"""
+    COMPLETED = "completed"
+    CREATED = "created"
+    RUNNING = "running"
     STATUS_CHOICES = [("завершена", "завершена"), ("создана", "создана"), ("запущена", "запущена")]
 
     first_send_at = models.DateTimeField(default=datetime.now(), verbose_name="Дата и время первой отправки")
     end_send_at = models.DateTimeField(default=datetime.now() + timedelta(days=1), verbose_name="Дата и время окончания отправки")
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='создана')
-    message = models.OneToOneField(Message, on_delete=models.CASCADE)
-    recipients = models.ManyToManyField(Recipient, verbose_name='Получатели')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='CREATED', verbose_name="Статус")
+    message = models.ForeignKey(Message, on_delete=models.SET_NULL, null=True, blank=True, related_name="mailing", verbose_name="Сообщение")
+    recipients = models.ManyToManyField(Recipient, verbose_name='Получатели', related_name="mailing")
+
 
     def __str__(self):
-        return f'{self.first_send_at}"{self.status}"'
+        subject = self.message.title if self.message else "Нет темы"
+        recipient_count = self.recipients.count()
+        return f"Рассылка № {self.pk}, Тема письма: {subject}, Количество получателей: {recipient_count}"
 
     class Meta:
         verbose_name = "Рассылка"
         verbose_name_plural = "Рассылки"
-        ordering = ("first_send_at", "status")
-        permissions = [("can_cancel_mailing", "Can cancel mailing"),]
+        ordering = ["id",]
 
 class MailingAttempt(models.Model):
     """Модель. Попытка рассылки"""
@@ -61,10 +69,11 @@ class MailingAttempt(models.Model):
     mail_server_response = models.TextField(null=True, blank=True, verbose_name="Ответ сервера")
     mailing = models.ForeignKey(Mailing, on_delete=models.CASCADE, related_name="attempts", verbose_name="Рассылка")
 
+
     def __str__(self):
         return f"{self.pk} - {self.attempted_at}"
 
     class Meta:
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылки"
-        ordering = ["id",]
+        ordering = ["id", ]

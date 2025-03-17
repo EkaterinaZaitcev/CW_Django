@@ -69,19 +69,16 @@ class MailingListView(ListView):
 class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     form_class = MailingForm
+    template_name = "mailing/mailing_form.html"
     success_message = reverse_lazy('mailing:mailing_list')
 
     def form_valid(self, form):
-        mailing = form.save()
+        instance = form.save()
         user = self.request.user
-        mailing.owner = user
-        mailing.save()
+        instance.owner = user
+        instance.save()
         return super().form_valid(form)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
@@ -120,5 +117,3 @@ class MailingAttemptListView(LoginRequiredMixin, ListView):
         elif self.request.user.groups.filter(name="Пользователи").exists():
             return super().get_queryset().filter(owner=self.request.user)
         raise PermissionDenied
-
-
