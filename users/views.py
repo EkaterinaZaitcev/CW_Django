@@ -7,7 +7,7 @@ from config.settings import EMAIL_HOST_USER
 
 
 class RegisterView(CreateView):
-    template_name = 'users/registration.html'
+    template_name = 'users:registration.html'
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('mailing:mailing_list')
 

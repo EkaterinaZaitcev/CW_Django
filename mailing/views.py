@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -77,6 +78,10 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         mailing.save()
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
@@ -96,7 +101,24 @@ class MailingDetailsView(LoginRequiredMixin, DetailView):
         queryset = Mailing.objects.prefetch_related("recipients")
         return queryset
 
-class MailingAttemptView(LoginRequiredMixin, ListView ):
+class MailingAttemptCreateView(LoginRequiredMixin, CreateView):
     model = MailingAttempt
+
+    def form_valid(self, form):
+        recipient = form.save()
+        recipient.owner = self.request.user
+        recipient.save()
+        return super().form_valid(form)
+
+
+class MailingAttemptListView(LoginRequiredMixin, ListView):
+    model = MailingAttempt
+
+    def get_queryset(self, *args, **kwargs):
+        if self.request.user.is_superuser:
+            return super().get_queryset()
+        elif self.request.user.groups.filter(name="Пользователи").exists():
+            return super().get_queryset().filter(owner=self.request.user)
+        raise PermissionDenied
 
 

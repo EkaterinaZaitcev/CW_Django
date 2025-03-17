@@ -23,6 +23,7 @@ class MailingForm(forms.ModelForm):
         model = Mailing
         fields = '__all__'
         exclude = ['owner']
+        widgets = {"recipients": forms.CheckboxSelectMultiple(),}
 
     def __init__(self, args, **kwargs):
         user = kwargs.pop('users', None)

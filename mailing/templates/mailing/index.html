@@ -167,7 +167,7 @@
         <h5 class="my-0 mr-md-auto font-weight-normal">Welcome {{ user.email }}!</h5>
         <form method="post" action="#" style="display: inline">
             {% csrf_token %}
-            <a type="submit" class="p-2 btn btn-outline-primary" href="{% url 'mailing:index' %}">Выйти</a>
+            <a type="submit" class="p-2 btn btn-outline-primary" href="{% url 'users:logout' %}">Выйти</a>
         </form>
         {% else %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Войти</a>

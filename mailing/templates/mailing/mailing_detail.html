@@ -5,18 +5,13 @@
 <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
     <div class="text-bg-dark me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
       <div class="my-3 py-3">
-        <h2 class="display-5">Название: {{object.name}}</h2>
-        <p class="lead">Описание: {{object.description}}</p>
-        <p class="lead">Категория: {{object.category}}</p>
-        <p class="lead">Стоимость: {{object.price}}</p>
-        <p class="lead">Дата создания: {{object.created_at}}</p>
-        <p class="lead">Дата последнего изменения: {{object.updated_at}}</p>
-        <img src="{{ object.image|media_filter }}"><br/>
-        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary" role="button" >Назад</a>
-        {% if perms.can_unpublish_product or user == product.owner%}
-          <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-secondary">Редактировать</a>
-          <a href="{% url 'catalog:product_delete' object.pk %}" class="btn btn-danger ">Удалить</a>
-        {% endif %}
+        <h2 class="display-5">Параметры рассылки</h2>
+        <p class="lead">Дата и время первой отправки: {{ object.first_send_at }}</p>
+        <p class="lead">Дата и время окончания отправки: {{object.end_send_at}}</p>
+        <p class="lead">Статус: {{object.status}}</p>
+        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-primary" role="button" >Назад</a>
+        <a class="btn btn-outline-primary m-1" href="{% url 'mailing:mailing_update' object.pk%}">Изменить</a>
+        <a class="btn btn-outline-danger m-1" href="{% url 'mailing:mailing_delete' object.pk%}">Удалить</a>
       </div>
     </div>
 </div>

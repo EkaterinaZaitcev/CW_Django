@@ -45,8 +45,8 @@ class Mailing(models.Model):
         return f'{self.first_send_at}"{self.status}"'
 
     class Meta:
-        verbose_name = "Попытка рассылки"
-        verbose_name_plural = "Попытки рассылки"
+        verbose_name = "Рассылка"
+        verbose_name_plural = "Рассылки"
         ordering = ("first_send_at", "status")
         permissions = [("can_cancel_mailing", "Can cancel mailing"),]
 
