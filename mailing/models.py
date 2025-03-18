@@ -60,8 +60,8 @@ class Mailing(models.Model):
 
 class MailingAttempt(models.Model):
     """Модель. Попытка рассылки"""
-    SUCCESS = "success"
-    FAILURE = "failure"
+    SUCCESS = "Успешно"
+    FAILURE = "Не успешно"
     STATUS_CHOICES = [("SUCCESS", "Успешно"), ("FAILURE", "Не успешно")]
 
     attempted_at = models.DateTimeField(verbose_name="Дата и время попытки отправки")

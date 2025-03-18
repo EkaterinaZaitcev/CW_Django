@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from mailing.forms import RecipientForm, MessageForm, MailingForm
@@ -65,12 +67,22 @@ class MessageUpdateView(LoginRequiredMixin, UpdateView):
 """CRUD Рассылка"""
 class MailingListView(ListView):
     model = Mailing
+    template_name = 'mailing/mailing_list.html'
+
+    def get_queryset(self, *args, **kwargs):
+        if (
+                self.request.user.is_superuser or self.request.user.groups.filter(name="Менеджеры").exists()
+        ):
+            return super().get_queryset()
+        elif self.request.user.groups.filter(name="Пользователи").exists():
+            return super().get_queryset().filter(owner=self.request.user)
+        raise PermissionDenied
 
 class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     form_class = MailingForm
     template_name = "mailing/mailing_form.html"
-    success_message = reverse_lazy('mailing:mailing_list')
+    success_url = reverse_lazy('mailing:mailing_list')
 
     def form_valid(self, form):
         instance = form.save()
@@ -101,7 +113,6 @@ class MailingDetailsView(LoginRequiredMixin, DetailView):
 
 class MailingAttemptCreateView(LoginRequiredMixin, CreateView):
     model = MailingAttempt
-    success_url = reverse_lazy('mailing:mailingattempt_list')
 
     def form_valid(self, form):
         recipient = form.save()
@@ -112,6 +123,7 @@ class MailingAttemptCreateView(LoginRequiredMixin, CreateView):
 
 class MailingAttemptListView(LoginRequiredMixin, ListView):
     model = MailingAttempt
+    template_name = 'mailing/mailingattempt_list.html'
 
     def get_queryset(self, *args, **kwargs):
         if self.request.user.is_superuser:
@@ -120,3 +132,15 @@ class MailingAttemptListView(LoginRequiredMixin, ListView):
             return super().get_queryset().filter(owner=self.request.user)
         raise PermissionDenied
 
+
+class MailingStopView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        mailing = get_object_or_404(Mailing, pk=pk)
+        user = request.user
+        is_manager = user.groups.filter(name="Менеджер").exists()
+        if is_manager or user == mailing.owner:
+            mailing.status = "completed"
+            mailing.save()
+
+            return redirect("mailing:mailing_list")
+        return HttpResponseForbidden("У вас нет прав для отключения рассылки")

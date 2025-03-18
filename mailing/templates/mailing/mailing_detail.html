@@ -8,9 +8,45 @@
         <p class="lead">Дата и время окончания отправки: {{object.end_send_at}}</p>
         <p class="lead">Статус: {{object.status}}</p>
 
-        <a href="{% url 'mailing:mailing_list' %}" class="btn btn-primary" role="button" >Назад</a>
-        <a class="btn btn-outline-primary m-1" href="{% url 'mailing:mailing_update' object.pk%}">Изменить</a>
-        <a class="btn btn-outline-danger m-1" href="{% url 'mailing:mailing_delete' object.pk%}">Удалить</a>
+        <tbody>
+        {% for mailing in object_list %}
+        <tr>
+            <td>{{ mailing.id }}</td>
+            <td>{{ mailing.first_send_at }}</td>
+            <td>{{ mailing.finish_send_at }}</td>
+            <td>{{ mailing.status }}
+            {% if mailing. owner == user or is_manager %}
+                {% if mailing.status != "completed" %}
+                <form action="{% url 'mailing:mailing_stop' mailing.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Завершить/отключить</button>
+                </form>
+                {% endif %}
+                {% endif %}
+            </td>
+            <td>{{ mailing.message }}</td>
+            <td>
+
+                {% for recipient in mailing.recipients.all %}
+                {{ recipient.email }}<br>
+                {% endfor %}
+
+
+            </td>
+
+            <td class="text-end">
+                {% if mailing.owner == user %}
+
+                <a class="btn btn-outline-primary" href="{% url 'mailing:mailing_detail' mailing.pk%}">Разослать вручную</a>
+
+                <a class="btn btn-outline-primary" href="{% url 'mailing:mailing_update' mailing.pk%}">Изменить</a>
+                <a class="btn btn-outline-danger" href="{% url 'mailing:mailing_delete' mailing.pk%}">Удалить</a>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
       </div>
     </div>
 </div>

@@ -13,13 +13,11 @@
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <!-- Выводим каждое поле формы в отдельном параграфе -->
     {{ form.as_p }}
-
     {% if object %}
-    <a class="btn btn-outline-primary m-1" href="{% url 'mailing:mailing_update' object.pk%}">Изменить</a>
+    <button type="submit" class="btn btn-outline-primary">Изменить</button>
     {% else %}
-     <a href="{% url 'mailing:mailing_list' %}" type="submit" class="btn btn-primary">Сохранить</a>
+    <button type="submit" class="btn btn-outline-primary">Добавить</button>
     {% endif %}
 
 </form>

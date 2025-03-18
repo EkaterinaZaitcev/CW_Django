@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, BooleanField
 
 from mailing.models import Recipient, Message, Mailing
 
@@ -24,3 +24,12 @@ class MailingForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['owner']
         widgets = {"recipients": forms.CheckboxSelectMultiple(),}
+
+class StyleFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for fild_name, fild in self.fields.items():
+            if isinstance(fild, BooleanField):
+                fild.widget.attrs["class"] = "form-check-input"
+            else:
+                fild.widget.attrs["class"] = "form-control"
