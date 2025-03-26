@@ -5,9 +5,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 
+from config.settings import CACHE_ENABLED, EMAIL_HOST_USER
 from mailing.models import Mailing, MailingAttempt, Message
-from config.settings import EMAIL_HOST_USER, CACHE_ENABLED
-
 
 
 def run_mail(request, pk):
@@ -89,3 +88,33 @@ def block_mailing(request, pk):
     mailing.is_active = {mailing.is_active: False, not mailing.is_active: True}[True]
     mailing.save()
     return redirect(reverse("mailing:mailing_list"))
+
+
+def daily_send():
+    '''Ежедневная рассылка'''
+    for item in Mailing.objects.filter(period_mail='daily'):
+        item.status_mail = 'running'
+        item.save()
+        run_mail(item)
+        item.status_mail = 'completed'
+        item.save()
+
+
+def weekly_send():
+    '''Еженедельная рассылка'''
+    for item in Mailing.objects.filter(period_mail='weekly'):
+        item.status = 'running'
+        item.save()
+        send_mail(item)
+        item.status = 'completed'
+        item.save()
+
+
+def monthly_send():
+    '''Ежемесячная рассылка'''
+    for item in Mailing.objects.filter(period_mail='monthly'):
+        item.status = 'running'
+        item.save()
+        send_mail(item)
+        item.status_mail = 'completed'
+        item.save()

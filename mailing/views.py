@@ -2,21 +2,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  TemplateView, UpdateView)
 
-from mailing.forms import RecipientForm, MessageForm, MailingForm
-from mailing.models import Recipient, Message, Mailing, MailingAttempt
+from mailing.forms import MailingForm, MessageForm, RecipientForm
+from mailing.models import Mailing, MailingAttempt, Message, Recipient
 
 
 class HomeView(TemplateView):
     template_name = 'mailing/index.html'
 
 """CRUD Получатель рассылки"""
+
 class RecipientListView(LoginRequiredMixin, ListView):
         model = Recipient
+
 
 class RecipientCreateView(LoginRequiredMixin, CreateView):
     model = Recipient
@@ -30,18 +33,24 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
         recipient.save()
         return super().form_valid(form)
 
+
 class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model= Recipient
     form_class = RecipientForm
     success_url = reverse_lazy('mailing:recipient_list')
 
+
 class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipient
     success_url = reverse_lazy('mailing:recipient_list')
 
+
 """CRUD Сообщения"""
+
+
 class MessageListView(ListView):
     model = Message
+
 
 class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
@@ -55,16 +64,20 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         message.save()
         return super().form_valid(form)
 
+
 class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
     success_url = reverse_lazy('mailing:message_list')
+
 
 class MessageUpdateView(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
     success_url = reverse_lazy('mailing:message_list')
 
+
 """CRUD Рассылка"""
+
 class MailingListView(ListView):
     model = Mailing
     template_name = 'mailing/mailing_list.html'
@@ -113,6 +126,7 @@ class MailingDetailsView(LoginRequiredMixin, DetailView):
 
 class MailingAttemptCreateView(LoginRequiredMixin, CreateView):
     model = MailingAttempt
+
 
     def form_valid(self, form):
         recipient = form.save()

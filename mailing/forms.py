@@ -1,7 +1,7 @@
 from django import forms
-from django.forms import ModelForm, BooleanField
+from django.forms import BooleanField, ModelForm
 
-from mailing.models import Recipient, Message, Mailing
+from mailing.models import Mailing, Message, Recipient
 
 
 class RecipientForm(forms.ModelForm):

@@ -36,10 +36,10 @@ class Message(models.Model):
 
 class Mailing(models.Model):
     """Рассылка"""
-    COMPLETED = "completed"
-    CREATED = "created"
-    RUNNING = "running"
-    STATUS_CHOICES = [("завершена", "завершена"), ("создана", "создана"), ("запущена", "запущена")]
+    COMPLETED = "завершена"
+    CREATED = "создана"
+    RUNNING = "запущена"
+    STATUS_CHOICES = [("COMPLETED", "завершена"), ("CREATED", "создана"), ("RUNNING", "запущена")]
 
     first_send_at = models.DateTimeField(default=datetime.now(), verbose_name="Дата и время первой отправки")
     end_send_at = models.DateTimeField(default=datetime.now() + timedelta(days=1), verbose_name="Дата и время окончания отправки")
